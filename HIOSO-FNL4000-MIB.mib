@@ -1,0 +1,1296 @@
+--
+-- HIOSO-7304C-MIB.my: MIB for HiOSO Switch
+-- OCOTE 2017, GuoLin.Li
+-- 
+
+HIOSO-7304C-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+        MODULE-IDENTITY,
+        OBJECT-IDENTITY,
+        enterprises
+                FROM SNMPv2-SMI;
+
+hioso MODULE-IDENTITY
+        LAST-UPDATED "201710300000Z"
+        ORGANIZATION "Shenzhen HiOSO Technology Co., Ltd."
+        CONTACT-INFO
+                "HiOSO Customer Service"
+        DESCRIPTION
+                "The Structure of Management Information for the
+                HiOSO enterprise."
+        REVISION      "20171030000Z"
+        DESCRIPTION
+                "Initial version of this MIB module."
+        ::= { enterprises 25355 }
+
+hiosoEpon OBJECT-IDENTITY
+        STATUS        current
+        DESCRIPTION
+                "to do"
+        ::= { hioso 4 }
+
+ha7304c  OBJECT-IDENTITY
+        STATUS        current
+        DESCRIPTION
+                "to do"
+        ::= { hiosoEpon 1 }
+----------------------------------------------------------------------------------
+
+-- Textual Conventions
+--
+
+fcPorts          OBJECT IDENTIFIER ::= { ha7304c 1 }
+fcVLAN           OBJECT IDENTIFIER ::= { ha7304c 2 }
+fcQos        		 OBJECT IDENTIFIER ::= { ha7304c 3 }
+fcLacp      		 OBJECT IDENTIFIER ::= { ha7304c 4 }
+fcStp        		 OBJECT IDENTIFIER ::= { ha7304c 5 }
+fcLldp       		 OBJECT IDENTIFIER ::= { ha7304c 6 }
+fcIgmp       		 OBJECT IDENTIFIER ::= { ha7304c 7 }
+fcMirror     		 OBJECT IDENTIFIER ::= { ha7304c 8 }
+fcMacAddress 		 OBJECT IDENTIFIER ::= { ha7304c 9 }
+fcSystemConfig   OBJECT IDENTIFIER ::= { ha7304c 10}
+
+----------------------------------------------------------------------------------
+--fcPorts
+--PortConfigTable
+----------------------------------------------------------------------------------
+
+portConfigTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF PortConfigEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+            "The table listing the configuration of the local ports."
+    ::= { fcPorts 1 }
+
+portConfigEntry OBJECT-TYPE
+    SYNTAX     PortConfigEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+            "An entry (conceptual row) in the portConfigTable."
+    INDEX      { portID }
+    ::= { portConfigTable 1 }
+
+PortConfigEntry ::= SEQUENCE {
+    portID            Integer32,
+    portName          DisplayString,
+    portAdminStatus   TruthValue,
+    portMode          Integer32
+    portFlowControl   TruthValue,
+    portLearningAbility    TruthValue
+}
+
+
+portID OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portConfigEntry 1 }
+
+portName OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (0..15))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portConfigEntry 2 }
+
+portAdminStatus OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portConfigEntry 3 }
+       
+portMode OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    mode_auto(0),
+                    mode_100fd(1),
+                    mode_100hd(2),
+                    mode_10fd(3),
+                    mode_10hd(4),
+                    mode_1000fd(5),
+                    mode_1000hd(6)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portConfigEntry 4 }
+
+portFlowControl OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portConfigEntry 5 }
+
+portLearningAbility OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portConfigEntry 6 }
+
+----------------------------------------------------------------------------------
+--fcPorts
+--PortStatusTable
+----------------------------------------------------------------------------------
+
+portStatusTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF PortStatusEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+            "The table listing the configuration of the local ports."
+    ::= { fcPorts 2 }
+
+portStatusEntry OBJECT-TYPE
+    SYNTAX     PortStatusEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+            "An entry (conceptual row) in the portStatusTable."
+    INDEX      { portID }
+    ::= { portStatusTable 1 }
+
+PortStatusEntry ::= SEQUENCE {
+    portID            Integer32,
+    portName          DisplayString,
+    portType          Integer32,
+    portAdminStatus   TruthValue,
+    portLink          Integer32,
+    portMode          Integer32,
+    portFlowControl   TruthValue,
+    portLearningAbility    TruthValue
+}
+
+
+portID OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portStatusEntry 1 }
+
+portName OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (0..15))
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portStatusEntry 2 }
+
+portType OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    10/100BASE-TX(0),
+                    100BASE-Fx(1),
+                    1000BASE-X/Tx(2)
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatusEntry 3 }
+    
+portAdminStatus OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portStatusEntry 4 }
+
+portLink OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    link_down(0),
+                    link_up(1)
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatusEntry 5 }
+           
+portMode OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    mode_auto(0),
+                    mode_100fd(1),
+                    mode_100hd(2),
+                    mode_10fd(3),
+                    mode_10hd(4),
+                    mode_1000fd(5),
+                    mode_1000hd(6)
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatusEntry 6 }
+
+portFlowControl OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatusEntry 7 }
+
+portLearningAbility OBJECT-TYPE
+    SYNTAX     TruthValue
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatusEntry 8 }
+
+----------------------------------------------------------------------------------
+--fcPorts
+--PortStatisticTable
+----------------------------------------------------------------------------------
+
+portStatisticTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF PortStatisticEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION     ""
+    ::= { fcPorts 3 }
+
+portStatisticEntry OBJECT-TYPE
+    SYNTAX     PortStatisticEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION  "An entry (conceptual row) in the portConfigTable."
+    INDEX      { portID }
+    ::= { portStatisticTable 1 }
+
+PortStatisticEntry ::= SEQUENCE {
+    portID            Integer32,
+    portName          DisplayString,
+    portRxPkt         Integer32,
+    portTxPkt         Integer32,
+    portCrcErrPkt     Integer32,
+    portDropedPkt     Integer32,
+    portFragPkt       Integer32,
+    portCountReset    Integer32
+}
+
+portID OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { portStatisticEntry 1 }
+
+portName OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (0..15))
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { portStatisticEntry 2 }
+       
+portRxPkt OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION  "description to do"
+    ::= { portStatisticEntry 3 }
+    
+portTxPkt OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION  "description to do"
+    ::= { portStatisticEntry 4 }
+
+portCrcErrPkt OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION  "description to do"
+    ::= { portStatisticEntry 5 }
+    
+portDropedPkt OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION  "description to do"
+    ::= { portStatisticEntry 6 }
+    
+portFragPkt OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION  "description to do"
+    ::= { portStatisticEntry 7 }
+                
+portCountReset OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    nonOp(0),
+                    reset(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { portStatisticEntry 8 }
+    
+----------------------------------------------------------------------------------
+--fcPorts
+--Combo port setting
+----------------------------------------------------------------------------------    
+comboPort  OBJECT IDENTIFIER ::= { fcPorts 4 }
+
+comboPortCfg OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    100Base-Fx(0),
+                    1000Base-X(1),
+                    10/100/1000Base-T(2),
+                    auto(3)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { comboPort 1 }
+
+comboPortCurCfgStatus OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    100Base-Fx(0),
+                    1000Base-X(1),
+                    10/100/1000Base-T(2),
+                    auto(3)                   
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { comboPort 2 }   
+    
+comboPortFiberLink OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    linkdown(0),
+                    linkup(1)                    
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { comboPort 3 }     
+
+comboPortCopperLink OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    linkdown(0),
+                    linkup(1)                    
+                }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { comboPort 4 }    
+    
+----------------------------------------------------------------------------------
+--VLAN
+----------------------------------------------------------------------------------            
+vlanFunction OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    vlan_portbased(0),                    
+                    vlan_8021q(1),
+                    vlan_qinq(2)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { fcVLAN 1 }
+
+vlanEther OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(4..4))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION      "Example: 0x8100,then the value is:8100"
+    ::= { fcVLAN 2 }    
+
+----------------------------------------------------------------------------------
+--VLAN
+--VlanPortTable
+----------------------------------------------------------------------------------
+vlanPort  OBJECT IDENTIFIER ::= { fcVLAN 3 }
+
+vlanPortTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF VlanPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { vlanPort 1 }
+
+vlanPortEntry OBJECT-TYPE
+    SYNTAX     VlanPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { portID }
+    ::= { vlanPortTable 1 }
+
+VlanPortEntry ::= SEQUENCE {
+    portID            Integer32,
+    portName          DisplayString,
+    portVlanMode      Integer32,
+    portPvid          Integer32,
+    portDefPriority   Integer32,
+    portIsolation     Integer32,
+    portTrunkVlans    OCTET STRING,
+    portUntagVlans    OCTET STRING
+}                             
+
+portID OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { vlanPortEntry 1 }
+
+portName OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (0..15))
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { vlanPortEntry 2 }
+
+portVlanMode OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    access(0),
+                    trunk(1),
+                    hybrid(2)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { vlanPortEntry 3 }
+    
+portPvid OBJECT-TYPE
+    SYNTAX     Integer32 (1..4095)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { vlanPortEntry 4 }
+
+portDefPriority OBJECT-TYPE
+    SYNTAX     Integer32 (0..7)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { vlanPortEntry 5 }      
+
+portIsolation OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    nonIsolated(0),
+                    isolated(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { vlanPortEntry 6 }
+    
+portTrunkVlans OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(0..1200))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            
+    "Trunk vlans, example: 10,15,200-300,4000-4010"
+    ::= { vlanPortEntry 7 }
+
+portUntagVlans OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(0..1200))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            
+    "Untagged vlans for hybrid port, example: 10,15,200-300,4000-4010"
+    ::= { vlanPortEntry 8 }
+
+----------------------------------------------------------------------------------
+--Qos
+--Qos Mapping
+----------------------------------------------------------------------------------
+qosMapping  OBJECT IDENTIFIER ::= { fcQos 1 }
+
+qosVlanCosMapping OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(8..8))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { qosMapping 1 }
+
+qosIpDscpMapping OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(64..64))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { qosMapping 2 }    
+
+----------------------------------------------------------------------------------
+--Qos
+--Qos Port Rate Limition
+----------------------------------------------------------------------------------
+qosPort  OBJECT IDENTIFIER ::= { fcQos 2 }
+
+qosPortRateTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF QosPortRateEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { qosPort 1 }
+
+qosPortRateEntry OBJECT-TYPE
+    SYNTAX     QosPortRateEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { portID }
+    ::= { qosPortRateTable 1 }
+
+QosPortRateEntry ::= SEQUENCE {
+    portID            Integer32,
+    portName          DisplayString,
+    portEgressRate    Integer32,
+    portIngressRate   Integer32
+}                             
+
+portID OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { qosPortRateEntry 1 }
+
+portName OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (0..15))
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION
+            "description to do"
+    ::= { qosPortRateEntry 2 }
+	
+portEgressRate OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    NoLimit(0),
+                    128Kbps(1),
+                    256Kbps(2),
+                    512Kbps(3),
+                    1Mbps(4),
+                    2Mbps(5),
+                    4Mbps(6),
+                    8Mbps(7),
+                    16Mbps(8),
+                    32Mbps(9),
+                    64Mbps(10)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { qosPortRateEntry 3 }
+    
+portIngressRate OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    NoLimit(0),
+                    128Kbps(1),
+                    256Kbps(2),
+                    512Kbps(3),
+                    1Mbps(4),
+                    2Mbps(5),
+                    4Mbps(6),
+                    8Mbps(7),
+                    16Mbps(8),
+                    32Mbps(9),
+                    64Mbps(10)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { qosPortRateEntry 4 }    
+    
+    
+----------------------------------------------------------------------------------
+--Qos
+--Qos Port Storm Protect
+----------------------------------------------------------------------------------    
+qosStorm  OBJECT IDENTIFIER ::= { fcQos 3 }
+
+qosStormEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    enable(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { qosStorm 1 }
+    
+qosStormRate OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "Unit:2Mbps"
+    ::= { qosStorm 2 } 
+    
+qosStormType OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "bit0-broadcast, bit1-multicast, bit2-unknown unicast"
+    ::= { qosStorm 3 }
+    
+----------------------------------------------------------------------------------
+--fcLacp
+--
+----------------------------------------------------------------------------------
+lacpTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF LacpEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { fcLacp 1 }
+
+lacpEntry OBJECT-TYPE
+    SYNTAX     LacpEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { lacpID }
+    ::= { lacpTable 1 }
+
+lacpEntry ::= SEQUENCE {
+    lacpID            Integer32,    
+    lacpMode          Integer32,
+    lacpKey           Integer32,
+    lacpTimeout       Integer32,
+    lacpEnable        Integer32,
+    lacpMemPortCfg    OCTET STRING,
+    lacpMemPortStatus OCTET STRING
+}                             
+
+lacpID OBJECT-TYPE
+    SYNTAX     Integer32 (1..8)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { lacpEntry 1 }
+
+lacpMode OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    static(0),
+                    dynamic(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 2 }
+    
+lacpKey OBJECT-TYPE
+    SYNTAX     Integer32 
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 3 }  
+    
+lacpTimeout OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    longTimeout(0),
+                    shortTimeout(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 4 }
+    
+lacpEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    enable(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 5 }          
+    
+lacpMemPortCfg OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE (0..9))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 6 }
+    
+lacpMemPortStatus OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE (0..9))
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { lacpEntry 7 }    
+	
+    
+----------------------------------------------------------------------------------
+--fcStp
+--Stp Bridge
+----------------------------------------------------------------------------------    
+stpBridge  OBJECT IDENTIFIER ::= { fcStp 1 }
+
+stpBridgeMode OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    stp(1),
+                    rstp(2)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { stpBridge 1 }    
+    
+stpBridgePriority OBJECT-TYPE
+    SYNTAX     Integer32 (0..61440)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "This value must be multiple to 4096"
+    ::= { stpBridge 2 }     
+    
+stpBridgeHelloTime OBJECT-TYPE
+    SYNTAX     Integer32 (1..10)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    
+    "Unit:Second
+    2*(forwardDelay-1)>=maximum aging time
+    maximum aging time>=2*(helloTime+1)
+    "
+    ::= { stpBridge 3 }     
+    
+stpBridgeMaxAgingTime OBJECT-TYPE
+    SYNTAX     Integer32 (6..40)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    
+    "Unit:Second
+    2*(forwardDelay-1)>=maximum aging time
+    maximum aging time>=2*(helloTime+1)
+    "
+    ::= { stpBridge 4 }
+
+stpBridgeForwardDelayTime OBJECT-TYPE
+    SYNTAX     Integer32 (4..30)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    
+    "Unit:Second
+    2*(forwardDelay-1)>=maximum aging time
+    maximum aging time>=2*(helloTime+1)
+    "
+    ::= { stpBridge 5 }
+    
+stpBridgeId OBJECT-TYPE
+    SYNTAX     DisplayString
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION    ""
+    ::= { stpBridge 6 }
+    
+stpBridgeRootId OBJECT-TYPE
+    SYNTAX     DisplayString
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION    ""
+    ::= { stpBridge 7 }
+    
+stpBridgeRootHelloTime OBJECT-TYPE
+    SYNTAX     Integer32 (1..10)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION ""
+    ::= { stpBridge 8 }     
+    
+stpBridgeRootMaxAgingTime OBJECT-TYPE
+    SYNTAX     Integer32 (6..40)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION ""
+    ::= { stpBridge 9 }
+
+stpBridgeRootForwardDelayTime OBJECT-TYPE
+    SYNTAX     Integer32 (4..30)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION ""
+    ::= { stpBridge 10 }       
+
+----------------------------------------------------------------------------------
+--fcStp
+--Stp Port Config/Status
+----------------------------------------------------------------------------------
+stpPort  OBJECT IDENTIFIER ::= { fcStp 2 }
+
+stpPortTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF StpPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { stpPort 1 }
+
+stpPortEntry OBJECT-TYPE
+    SYNTAX     StpPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { stpPortID }
+    ::= { stpPortTable 1 }
+
+stpPortEntry ::= SEQUENCE {
+    stpPortID                Integer32,    
+    stpPortPathCost          Integer32,
+    stpPortPriority          Integer32,
+    stpPortRole              Integer32,
+    stpPortForwardStatus     Integer32,
+    stpPortDesignatedBridge  DisplayString,
+    stpPortDesignatedPort    Integer32
+}                             
+
+stpPortID OBJECT-TYPE
+    SYNTAX     Integer32 (1..9)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { stpPortEntry 1 }
+
+stpPortPathCost OBJECT-TYPE
+    SYNTAX     Integer32 (0..200000000)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "0:Meaning AUTO"
+    ::= { stpPortEntry 2 }    
+    
+stpPortPriority OBJECT-TYPE
+    SYNTAX     Integer32 (0..240)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { stpPortEntry 3 } 
+    
+stpPortRole OBJECT-TYPE
+    SYNTAX     Integer32 {
+    	           None(0),
+    	           RootPort(1),
+    	           DesignedPort(2),
+    	           BackupPort(3)
+    	         }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { stpPortEntry 4 }
+    
+stpPortForwardStatus OBJECT-TYPE
+    SYNTAX     Integer32 {
+    	           Disable(0),
+    	           Listening(1),
+    	           Learning(2),
+    	           Forwarding(3),
+    	           Blocking(4),
+    	           Discard(5)
+    	         }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { stpPortEntry 5 }          
+
+stpPortDesignatedBridge OBJECT-TYPE
+    SYNTAX     DisplayString
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { stpPortEntry 6 }    
+    
+stpPortDesignatedPort OBJECT-TYPE
+    SYNTAX     Integer32 (1..9)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { stpPortEntry 7 }    
+    
+    
+    
+----------------------------------------------------------------------------------
+--fcStp
+--Loop Detection
+----------------------------------------------------------------------------------    
+loopDetect  OBJECT IDENTIFIER ::= { fcStp 3 }
+
+loopDetectEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    enable(1)                    
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { loopDetect 1 }     
+
+loopDetectInterval OBJECT-TYPE
+    SYNTAX     Integer32 
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            
+    "How long to try loop detect again after breaking down the port
+    Unit:Second
+    Must be >=1 second"
+    ::= { loopDetect 2 }     
+    
+loopDetectResume OBJECT-TYPE
+    SYNTAX     Integer32 
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            
+    "How long to resume the shutdown-port
+    Unit:Miniute
+    Must be >=1 miniute"
+    ::= { loopDetect 3 }    
+    
+loopDetectPortMap OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE(8..16))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            
+    "Every octet indicating a port"
+    ::= { loopDetect 4 }
+
+----------------------------------------------------------------------------------
+--fcLldp
+--
+----------------------------------------------------------------------------------     
+lldpGlobal  OBJECT IDENTIFIER ::= { fcLldp 1 }
+loopEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    enable(1)                    
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { lldpGlobal 1 }    
+    
+    
+    
+    
+----------------------------------------------------------------------------------
+--fcIgmp
+--
+----------------------------------------------------------------------------------     
+igmpGlobal  OBJECT IDENTIFIER ::= { fcIgmp 1 }
+
+igmpGlobalEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    disable(0),
+                    enable(1)                    
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { igmpGlobal 1 }
+
+igmpGlobalMode OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    snooping(0),
+                    proxy(1)                    
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { igmpGlobal 2 } 
+
+igmpGlobalVersion OBJECT-TYPE
+    SYNTAX     Integer32 {
+                    igmpv1(0),
+                    igmpv2(1),
+                    igmpv3(2)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "description to do"
+    ::= { igmpGlobal 3 }   
+    
+igmpGlobalResponse OBJECT-TYPE
+    SYNTAX     Integer32 (0..20)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "Default:10s"
+    ::= { igmpGlobal 4 }
+
+igmpGlobalAgingTime OBJECT-TYPE
+    SYNTAX     Integer32 (0..420)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "Default:60s"
+    ::= { igmpGlobal 5 }    
+    
+igmpGlobalRouterAgingTime OBJECT-TYPE
+    SYNTAX     Integer32 (0..420)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "Default:60s"
+    ::= { igmpGlobal 6 }
+
+--------------------------------------------------------
+igmpVlan  OBJECT IDENTIFIER ::= { fcIgmp 2 }
+
+igmpVlanTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF IgmpVlanEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { igmpVlan 1 }
+
+igmpVlanEntry OBJECT-TYPE
+    SYNTAX     IgmpVlanEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { igmpVlanID }
+    ::= { igmpVlanTable 1 }
+
+igmpVlanEntry ::= SEQUENCE {
+    igmpVlanID               Integer32,    
+    igmpVlanEnable           Integer32
+}                             
+
+igmpVlanID OBJECT-TYPE
+    SYNTAX     Integer32 (1..4095)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "description to do"
+    ::= { igmpVlanEntry 1 }
+
+igmpVlanEnable OBJECT-TYPE
+    SYNTAX     Integer32 {
+    						disable(0),
+    						enable(1)}    						
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { igmpVlanEntry 2 }
+    
+--------------------------------------------------------   
+igmpVlanPortStatusTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF IgmpVlanPortStatusEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { igmpVlan 2 }
+    
+igmpVlanPortStatusEntry OBJECT-TYPE
+    SYNTAX     IgmpVlanPortStatusEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { igmpVlanID,igmpVlanPortID }
+    ::= { igmpVlanPortStatusTable 1 }
+
+igmpVlanPortStatusEntry ::= SEQUENCE {
+		igmpVlanID                   Integer32,
+    igmpVlanPortID               Integer32,    
+    igmpVlanPortStatus           Integer32
+}                             
+
+igmpVlanID OBJECT-TYPE
+    SYNTAX     Integer32 (1..4094)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "vlan id"
+    ::= { igmpVlanPortStatusEntry 1 }
+    
+igmpVlanPortID OBJECT-TYPE
+    SYNTAX     Integer32 (1..9)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "port id"
+    ::= { igmpVlanPortStatusEntry 2 }
+
+igmpVlanPortStatus OBJECT-TYPE
+    SYNTAX     Integer32 {non(0),dynamic(1),static(2)}    						
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { igmpVlanPortStatusEntry 3 }
+    
+
+--------------------------------------------------------   
+igmpVlanPortRouterTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF IgmpVlanPortRouterEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { igmpVlan 3 }
+    
+igmpVlanPortRouterEntry OBJECT-TYPE
+    SYNTAX     IgmpVlanPortRouterEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { igmpVlanID,igmpVlanPortID }
+    ::= { igmpVlanPortRouterTable 1 }
+
+igmpVlanPortRouterEntry ::= SEQUENCE {
+		igmpVlanID                   Integer32,
+    igmpVlanPortID               Integer32,    
+    igmpVlanPortRouter           Integer32
+}                             
+
+igmpVlanID OBJECT-TYPE
+    SYNTAX     Integer32 (1..4094)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "vlan id"
+    ::= { igmpVlanPortRouterEntry 1 }
+    
+igmpVlanPortID OBJECT-TYPE
+    SYNTAX     Integer32 (1..9)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "port id"
+    ::= { igmpVlanPortRouterEntry 2 }
+
+igmpVlanPortRouter OBJECT-TYPE
+    SYNTAX     Integer32 {non(0),static(1)}    						
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { igmpVlanPortRouterEntry 3 }     
+
+
+
+
+----------------------------------------------------------------------------------
+--fcMirror
+--
+----------------------------------------------------------------------------------
+mirrorMonitorPort OBJECT-TYPE
+    SYNTAX     Integer32 (0..9)
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "0--Mean disable mirror function,1--Mean port1 as monitor port"
+    ::= { fcMirror 1 }
+
+mirrorDirect OBJECT-TYPE
+    SYNTAX     Integer32 {out(0),inout(1)}
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    ""
+    ::= { fcMirror 2 }
+
+mirrorSourcePortsMap OBJECT-TYPE
+    SYNTAX     OCTET STRING (SIZE (4..4))
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    "Each bit indicating a port,if bit==1,mean the port is selected as source port"
+    ::= { fcMirror 3 }
+            
+----------------------------------------------------------------------------------
+--fcMacAddress
+--
+----------------------------------------------------------------------------------     
+macAddressGlobal    OBJECT IDENTIFIER ::= { fcMacAddress 1 }
+
+macAddressGlobalAgingTime OBJECT-TYPE
+    SYNTAX     Integer32
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION    ""
+    ::= { macAddressGlobal 1 }
+
+------------------------------------------------------------
+macAddressPort      OBJECT IDENTIFIER ::= { fcMacAddress 2 }
+
+macAddressPortTable OBJECT-TYPE
+    SYNTAX     SEQUENCE OF MacAddressPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo"
+    ::= { macAddressPort 1 }
+    
+macAddressPortEntry OBJECT-TYPE
+    SYNTAX     MacAddressPortEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION            "todo."
+    INDEX      { macAddressPortId,macAddressMacId }
+    ::= { macAddressPortTable 1 }
+
+macAddressPortEntry ::= SEQUENCE {
+    macAddressPortId             Integer32,    
+    macAddressMacId              DisplayString,
+    macAddressMac                DisplayString,
+    macAddressMacType            Integer32,
+    macAddressOperator           Integer32
+}                             
+
+macAddressPortId OBJECT-TYPE
+    SYNTAX     Integer32 (1..9)
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION "port id"
+    ::= { macAddressPortEntry 1 }
+
+macAddressMacId OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (12..12))    						
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { macAddressPortEntry 2 }
+    
+macAddressMac OBJECT-TYPE
+    SYNTAX     DisplayString (SIZE (12..12))    						
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION            ""
+    ::= { macAddressPortEntry 3 }
+    
+macAddressMacType OBJECT-TYPE
+    SYNTAX     Integer32 { dynamic(0),static(1) }
+    MAX-ACCESS read-only
+    STATUS     current
+    DESCRIPTION ""
+    ::= { macAddressPortEntry 4 }
+    
+macAddressOperator OBJECT-TYPE
+    SYNTAX     Integer32 { non(0),staticAdd(1),staticRemove(2) }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION ""
+    ::= { macAddressPortEntry 5 }        
+
+    
+----------------------------------------------------------------------------------
+--fcSystemConfig
+--
+----------------------------------------------------------------------------------     
+fcSystemReset OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    nop(0),
+                    reset(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { fcSystemConfig 1 }  
+
+fcSystemRestore OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    nop(0),
+                    restore(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { fcSystemConfig 2 } 
+    
+fcSystemSaveConfig OBJECT-TYPE
+    SYNTAX     Integer32  {
+                    nop(0),
+                    save(1)
+                }
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION            "description to do"
+    ::= { fcSystemConfig 3 }    
+    
+END
